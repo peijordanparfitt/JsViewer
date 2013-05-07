@@ -1,6 +1,7 @@
-﻿var initialCenter = [-81.3794, 28.5381]
-var intialZoom = 10
+﻿var initialCenter = [-81.3794, 28.5381];
+var intialZoom = 10;
 
+var baseURL = "http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer";
 
 
 var idents = [
