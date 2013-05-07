@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html> 
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples 
+      on iOS devices-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Identify with Popup</title>
+
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/esri/css/esri.css">
+    <style>
+      html, body, #map {
+        height:100%;
+        width:100%;
+        margin:0;
+        padding:0;
+      }
+    </style>
+
+    <script>var dojoConfig = { parseOnLoad: true };</script>
+    <script src="js/config.js" type="text/javascript"></script>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/"></script>
+    <script>
+
+    dojo.require("esri.map");
+    dojo.require("esri.dijit.Popup");
+      
+    var map;
+    var identifyTask, identifyParams;
+      
+    function init() {
+        //setup the popup window 
+        var popup = new esri.dijit.Popup({
+            fillSymbol: new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255,0,0]), 2), new dojo.Color([255,255,0,0.25]))
+        }, dojo.create("div"));
+   
+        map = new esri.Map("map", {
+          basemap: "satellite",
+          center: initialCenter,
+          zoom: intialZoom,
+          infoWindow: popup
+        });
+        
+        dojo.connect(map, "onLoad", mapReady);
+
+        var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer("http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer", { opacity: 1 });
+        map.addLayer(landBaseLayer);
+      }
+      
+      function mapReady(map){
+        dojo.connect(map,"onClick",executeIdentifyTask);
+        //create identify tasks and setup parameters 
+        identifyTask = new esri.tasks.IdentifyTask("http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer");
+       
+        identifyParams = new esri.tasks.IdentifyParameters();
+        identifyParams.tolerance = 3;
+        identifyParams.returnGeometry = true;
+        identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+        identifyParams.width  = map.width;
+        identifyParams.height = map.height;
+      }
+      
+      function executeIdentifyTask(evt) {
+        identifyParams.geometry = evt.mapPoint;
+        identifyParams.mapExtent = map.extent;
+       
+        var deferred = identifyTask.execute(identifyParams);
+
+        deferred.addCallback(function (response) {
+            // response is an array of identify result objects    
+            // Let's return an array of features.
+            return dojo.map(response, function (result) {
+                var feature = result.feature;
+                for (var i = 0; i < idents.length; i++) {
+                    var object = idents[i];
+                    if (result.layerName === object.layerName) {
+                        var template = new esri.InfoTemplate("", object.layerContent);
+                        feature.setInfoTemplate(template);
+                    }
+                }
+                return feature;
+            });
+        });
+      
+        // InfoWindow expects an array of features from each deferred
+        // object that you pass. If the response from the task execution 
+        // above is not an array of features, then you need to add a callback
+        // like the one above to post-process the response and return an
+        // array of features.
+        map.infoWindow.setFeatures([ deferred ]);
+        map.infoWindow.show(evt.mapPoint);
+      }
+      
+      dojo.ready(init);
+    </script>
+  </head>
+  
+  <body>
+    <div id="map"></div>
+  </body>
+
+</html>
