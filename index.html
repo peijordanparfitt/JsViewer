@@ -28,19 +28,20 @@
              style="width:100%;height:100%;margin:0;">
 
             <div id="map" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'" style="padding:0;">
-                <div style="position:absolute; right:20px; top:10px; z-Index:999;">
+                <div style="position:absolute; right: 20px; top: 60px; z-Index: 999;">
+                    <div id="legendPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Legend', closable:false, open:false">
+                        <div id="legendDiv"></div>
+                    </div>
+                </div>
+                <div style="position:absolute; right: 20px; top: 25px; z-Index: 999;">
                     <div data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Switch Basemap', closable:false,  open:false">
                         <div data-dojo-type="dijit.layout.ContentPane" style="width:380px; height:280px; overflow:auto;">
                             <div id="basemapGallery"></div>
                         </div>
                     </div>
                 </div>
-                <div data-dojo-type="dijit.layout.ContentPane" id="legendPane" data-dojo-props="title:'Legend', selected:true" style="display: none;">
-                    <div id="legendDiv"></div>
-                </div>
             </div>
         </div>
-        <input type="button" id="btnToggleLegend" value="Show Legend" onclick="btnToggleLegend_Click()" />
         <div id="searchDiv"></div>
     </body>
 </html>

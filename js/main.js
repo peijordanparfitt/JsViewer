@@ -36,7 +36,7 @@ function init() {
 
     //legend
     try { //use try/catch to block error
-        var layerInfo = [{ layer: landBaseLayer, title: "Map Layers"}];
+        var layerInfo = [{ layer: landBaseLayer, title: ""}];
         if (layerInfo.length > 0) {
             var legendDijit = new esri.dijit.Legend({
                 map: map,
@@ -127,14 +127,4 @@ function executeIdentifyTask(evt) {
     // array of features.
     map.infoWindow.setFeatures([deferred]);
     map.infoWindow.show(evt.mapPoint);
-}
-
-function btnToggleLegend_Click(evt) {
-    if (document.getElementById('legendPane').style.display == "none") {
-        document.getElementById('legendPane').style.display = "block";
-        document.getElementById('btnToggleLegend').value = "Hide Legend";
-    } else {
-        document.getElementById('legendPane').style.display = "none";
-        document.getElementById('btnToggleLegend').value = "Show Legend";
-    }
 }
