@@ -1,7 +1,14 @@
-﻿var initialCenter = [-81.3794, 28.5381];
-var intialZoom = 10;
+﻿var mapConfig = {
+    initialCenter: [-81.3794, 28.5381],
+    intialZoom: 10,
+    showScalebar: true,
+    showBasemapGallery: true,
+    showGeocoder: true,
+    doIdentfiy: true
+};
 
-var baseURL = "http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer";
+var initialCenter = [-81.3794, 28.5381];
+var intialZoom = 10;
 
 var mapLayers = [
         {

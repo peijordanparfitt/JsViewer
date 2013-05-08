@@ -27,8 +27,8 @@ function init() {
 
     map = new esri.Map("map", {
         basemap: "satellite",
-        center: initialCenter,
-        zoom: intialZoom,
+        center: mapConfig.initialCenter,
+        zoom: mapConfig.intialZoom,
         infoWindow: popup
     });
 
@@ -47,40 +47,9 @@ function init() {
 
 }
 
-function addMapParts() {
-
-    //scalebar
-    var scalebar = new esri.dijit.Scalebar({
-        map: map,
-        scalebarUnit: "dual"
-    });
-
-    //add the basemap gallery, in this case we'll display maps from ArcGIS.com including bing maps
-    var basemapGallery = new esri.dijit.BasemapGallery({
-        showArcGISBasemaps: true,
-        map: map
-    }, "basemapGallery");
-    basemapGallery.startup();
-    
-    var geocoder = new esri.dijit.Geocoder({
-        map: map,
-        autoComplete: true,
-        arcgisGeocoder: {
-            name: "Esri World Geocoder",
-            suffix: ""
-        }
-    }, "searchDiv");
-    geocoder.startup();
-
-   dojo.connect(geocoder, "onFindResults", function (results) {
-        //TODO: fire something
-    });
-
-}
-
-
 function mapReady(map) {
 
+    //add layers and set identify
     for (var i = 0; i < mapLayers.length; i++) {
         var newLayer = new esri.layers.ArcGISDynamicMapServiceLayer(mapLayers[i].url, { opacity: mapLayers[i].opacity });
         layerInfo.push({ layer: newLayer, title: mapLayers[i].name });
@@ -102,8 +71,6 @@ function mapReady(map) {
             }
 
             deferred.addCallback(function (response) {
-                // response is an array of identify result objects    
-                // Let's return an array of features.
                 return dojo.map(response, function (result) {
                     var feature = result.feature;
                     for (var i = 0; i < idents.length; i++) {
@@ -117,14 +84,45 @@ function mapReady(map) {
                 });
             });
 
-            // InfoWindow expects an array of features from each deferred
-            // object that you pass. If the response from the task execution 
-            // above is not an array of features, then you need to add a callback
-            // like the one above to post-process the response and return an
-            // array of features.
             map.infoWindow.setFeatures([deferred]);
             map.infoWindow.show(evt.mapPoint);
         });
 
     }
+}
+
+function addMapParts() {
+    //scalebar
+    if (mapConfig.showScalebar) {
+        var scalebar = new esri.dijit.Scalebar({
+            map: map,
+            scalebarUnit: "dual"
+        });
+    }
+    
+    //add the basemap gallery, in this case we'll display maps from ArcGIS.com including bing maps
+    if (mapConfig.showBasemapGallery) {
+        var basemapGallery = new esri.dijit.BasemapGallery({
+            showArcGISBasemaps: true,
+            map: map
+        }, "basemapGallery");
+        basemapGallery.startup();
+    }
+
+    if (mapConfig.showGeocoder) {
+        var geocoder = new esri.dijit.Geocoder({
+            map: map,
+            autoComplete: true,
+            arcgisGeocoder: {
+                name: "Esri World Geocoder",
+                suffix: ""
+            }
+        }, "searchDiv");
+        geocoder.startup();
+
+        dojo.connect(geocoder, "onFindResults", function (results) {
+            afterGeocodeInit(results);
+        });
+    }
+
 }
