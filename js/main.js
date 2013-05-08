@@ -12,6 +12,7 @@ dojo.require("esri.dijit.Legend");
 dojo.require("esri.dijit.Popup");
 dojo.require("esri.dijit.Scalebar");
 
+dojo.require("agsjs.dijit.TOC");
 
 var map;
 var identifyTask, identifyParams;
@@ -34,22 +35,15 @@ function init() {
     var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
     map.addLayer(landBaseLayer);
 
-    //legend
-    try { //use try/catch to block error
-        var layerInfo = [{ layer: landBaseLayer, title: ""}];
-        if (layerInfo.length > 0) {
-            var legendDijit = new esri.dijit.Legend({
-                map: map,
-                layerInfos: layerInfo
-            }, "legendDiv");
-            legendDijit.startup();
-        }
-    }
-    catch (error) {
-
-    }
-
     addMapParts();
+
+    var layerInfo = [{ layer: landBaseLayer, title: ""}];
+    var toc = new agsjs.dijit.TOC({
+        map: map,
+        layerInfos: layerInfo
+    }, 'tocDiv');
+    toc.startup();
+
 }
 
 function addMapParts() {
