@@ -3,6 +3,13 @@ var intialZoom = 10;
 
 var baseURL = "http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer";
 
+var mapLayers = [
+        {
+            name: "Map Layers",
+            url: "http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer",
+            opacity: 1,
+        }
+    ];
 
 var idents = [
         {   

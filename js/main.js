@@ -42,6 +42,8 @@ function init() {
         toc.startup();
     });
 
+    dojo.connect(map, "onClick", executeIdentifyTask);
+
     dojo.connect(map, "onLoad", mapReady);
 
     addMapParts();
@@ -85,14 +87,17 @@ function addMapParts() {
 
 function mapReady(map) {
 
+    for (var i = 0; i < mapLayers.length; i++) {
+        var newLayer = new esri.layers.ArcGISDynamicMapServiceLayer(mapLayers[i].url, { opacity: mapLayers[i].opacity });
+        layerInfo.push({ layer: newLayer, title: mapLayers[i].name });
+        map.addLayer(newLayer);
 
-    var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
-    layerInfo.push({ layer: landBaseLayer, title: "" });
-    map.addLayer(landBaseLayer);
+        dojo.connect(map, "onClick", executeIdentifyTask);
 
-    dojo.connect(map, "onClick", executeIdentifyTask);
+    }
+
     //create identify tasks and setup parameters 
-    identifyTask = new esri.tasks.IdentifyTask(baseURL);
+    identifyTask = new esri.tasks.IdentifyTask(mapLayers[0].url);
 
     identifyParams = new esri.tasks.IdentifyParameters();
     identifyParams.tolerance = 3;
