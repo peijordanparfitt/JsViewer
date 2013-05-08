@@ -52,9 +52,6 @@ function addMapParts() {
     //scalebar
     var scalebar = new esri.dijit.Scalebar({
         map: map,
-        // "dual" displays both miles and kilmometers
-        // "english" is the default, which displays miles
-        // use "metric" for kilometers
         scalebarUnit: "dual"
     });
 
@@ -75,9 +72,9 @@ function addMapParts() {
     }, "searchDiv");
     geocoder.startup();
 
-   /* dojo.connect(geocoder, "onFindResults", function (results) {
-        Alert(dojo.toJson(results));
-    });*/
+   dojo.connect(geocoder, "onFindResults", function (results) {
+        //TODO: fire something
+    });
 
 }
 
