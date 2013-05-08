@@ -54,40 +54,40 @@ function mapReady(map) {
         var newLayer = new esri.layers.ArcGISDynamicMapServiceLayer(mapLayers[i].url, { opacity: mapLayers[i].opacity });
         layerInfo.push({ layer: newLayer, title: mapLayers[i].name });
         map.addLayer(newLayer);
+        if (mapConfig.doIdentify) {
+            dojo.connect(map, "onClick", function (evt) {
+                var identifyParams = new esri.tasks.IdentifyParameters();
+                identifyParams.tolerance = 3;
+                identifyParams.returnGeometry = true;
+                identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+                identifyParams.width = map.width;
+                identifyParams.height = map.height;
+                identifyParams.geometry = evt.mapPoint;
+                identifyParams.mapExtent = map.extent;
 
-        dojo.connect(map, "onClick", function (evt) {
-            var identifyParams = new esri.tasks.IdentifyParameters();
-            identifyParams.tolerance = 3;
-            identifyParams.returnGeometry = true;
-            identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-            identifyParams.width = map.width;
-            identifyParams.height = map.height;
-            identifyParams.geometry = evt.mapPoint;
-            identifyParams.mapExtent = map.extent;
+                for (var y = 0; y < mapLayers.length; y++) {
+                    var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
+                    var deferred = identifyTask.execute(identifyParams);
+                }
 
-            for (var y = 0; y < mapLayers.length; y++) {
-                var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
-                var deferred = identifyTask.execute(identifyParams);
-            }
-
-            deferred.addCallback(function (response) {
-                return dojo.map(response, function (result) {
-                    var feature = result.feature;
-                    for (var i = 0; i < idents.length; i++) {
-                        var object = idents[i];
-                        if (result.layerName === object.layerName) {
-                            var template = new esri.InfoTemplate("", object.layerContent);
-                            feature.setInfoTemplate(template);
+                deferred.addCallback(function (response) {
+                    return dojo.map(response, function (result) {
+                        var feature = result.feature;
+                        for (var i = 0; i < idents.length; i++) {
+                            var object = idents[i];
+                            if (result.layerName === object.layerName) {
+                                var template = new esri.InfoTemplate("", object.layerContent);
+                                feature.setInfoTemplate(template);
+                            }
                         }
-                    }
-                    return feature;
+                        return feature;
+                    });
                 });
+
+                map.infoWindow.setFeatures([deferred]);
+                map.infoWindow.show(evt.mapPoint);
             });
-
-            map.infoWindow.setFeatures([deferred]);
-            map.infoWindow.show(evt.mapPoint);
-        });
-
+        }
     }
 }
 
@@ -109,10 +109,11 @@ function addMapParts() {
         basemapGallery.startup();
     }
 
-    if (mapConfig.showGeocoder) {
+    if (mapConfig.geocoder.show) {
         var geocoder = new esri.dijit.Geocoder({
+            autoNavigate: mapConfig.autoNavigate,
             map: map,
-            autoComplete: true,
+            autoComplete: mapConfig.geocoder.autoComplete,
             arcgisGeocoder: {
                 name: "Esri World Geocoder",
                 suffix: ""

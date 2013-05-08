@@ -3,8 +3,12 @@
     intialZoom: 10,
     showScalebar: true,
     showBasemapGallery: true,
-    showGeocoder: true,
-    doIdentfiy: true
+    geocoder: {
+        show: true,
+        autoComplete: false,
+        autoNavigate: false
+    },
+    doIdentify: true
 };
 
 var initialCenter = [-81.3794, 28.5381];

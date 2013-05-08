@@ -1,3 +1,3 @@
-﻿private function afterGeocodeInit(results) {
-
+﻿function afterGeocodeInit(results) {
+    alert('TODO');
 }
