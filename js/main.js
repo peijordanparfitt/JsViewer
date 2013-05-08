@@ -2,6 +2,8 @@
 dojo.require("esri.arcgis.utils");
 dojo.require("esri.virtualearth.VETiledLayer");
 
+dojo.require("dijit.dijit"); // optimize: load dijit layer
+
 dojo.require("dijit.TitlePane");
 dojo.require("dijit.layout.BorderContainer");
 dojo.require("dijit.layout.ContentPane");
@@ -11,7 +13,7 @@ dojo.require("esri.dijit.Geocoder");
 dojo.require("esri.dijit.Legend");
 dojo.require("esri.dijit.Popup");
 dojo.require("esri.dijit.Scalebar");
-
+dojo.require("dojo.fx")
 dojo.require("agsjs.dijit.TOC");
 
 var map;
@@ -33,16 +35,19 @@ function init() {
     dojo.connect(map, "onLoad", mapReady);
 
     var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
+
+    dojo.connect(map, 'onLayerAdd', function (results) {
+        var layerInfo = [{ layer: landBaseLayer, title: ""}];
+        var toc = new agsjs.dijit.TOC({
+            map: map,
+            layerInfos: layerInfo
+        }, 'tocDiv');
+        toc.startup();
+    });
+
     map.addLayer(landBaseLayer);
 
     addMapParts();
-
-    var layerInfo = [{ layer: landBaseLayer, title: ""}];
-    var toc = new agsjs.dijit.TOC({
-        map: map,
-        layerInfos: layerInfo
-    }, 'tocDiv');
-    toc.startup();
 
 }
 
@@ -63,9 +68,7 @@ function addMapParts() {
         map: map
     }, "basemapGallery");
     basemapGallery.startup();
-
-    dojo.connect(basemapGallery, "onError", function (msg) { console.log(msg) });
-
+    
     var geocoder = new esri.dijit.Geocoder({
         map: map,
         autoComplete: true,
@@ -75,6 +78,10 @@ function addMapParts() {
         }
     }, "searchDiv");
     geocoder.startup();
+
+   /* dojo.connect(geocoder, "onFindResults", function (results) {
+        Alert(dojo.toJson(results));
+    });*/
 
 }
 
