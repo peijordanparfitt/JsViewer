@@ -17,8 +17,6 @@ dojo.require("dojo.fx")
 dojo.require("agsjs.dijit.TOC");
 
 var map;
-var identifyTask;
-var identifyParams;
 var layerInfo = [];
 
 function init() {
@@ -42,7 +40,6 @@ function init() {
         toc.startup();
     });
 
-    dojo.connect(map, "onClick", executeIdentifyTask);
 
     dojo.connect(map, "onLoad", mapReady);
 
@@ -92,48 +89,45 @@ function mapReady(map) {
         layerInfo.push({ layer: newLayer, title: mapLayers[i].name });
         map.addLayer(newLayer);
 
-        dojo.connect(map, "onClick", executeIdentifyTask);
+        dojo.connect(map, "onClick", function (evt) {
+            var identifyParams = new esri.tasks.IdentifyParameters();
+            identifyParams.tolerance = 3;
+            identifyParams.returnGeometry = true;
+            identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+            identifyParams.width = map.width;
+            identifyParams.height = map.height;
+            identifyParams.geometry = evt.mapPoint;
+            identifyParams.mapExtent = map.extent;
+
+            for (var y = 0; y < mapLayers.length; y++) {
+                var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
+                var deferred = identifyTask.execute(identifyParams);
+            }
+
+            deferred.addCallback(function (response) {
+                // response is an array of identify result objects    
+                // Let's return an array of features.
+                return dojo.map(response, function (result) {
+                    var feature = result.feature;
+                    for (var i = 0; i < idents.length; i++) {
+                        var object = idents[i];
+                        if (result.layerName === object.layerName) {
+                            var template = new esri.InfoTemplate("", object.layerContent);
+                            feature.setInfoTemplate(template);
+                        }
+                    }
+                    return feature;
+                });
+            });
+
+            // InfoWindow expects an array of features from each deferred
+            // object that you pass. If the response from the task execution 
+            // above is not an array of features, then you need to add a callback
+            // like the one above to post-process the response and return an
+            // array of features.
+            map.infoWindow.setFeatures([deferred]);
+            map.infoWindow.show(evt.mapPoint);
+        });
 
     }
-
-    //create identify tasks and setup parameters 
-    identifyTask = new esri.tasks.IdentifyTask(mapLayers[0].url);
-
-    identifyParams = new esri.tasks.IdentifyParameters();
-    identifyParams.tolerance = 3;
-    identifyParams.returnGeometry = true;
-    identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-    identifyParams.width = map.width;
-    identifyParams.height = map.height;
-}
-
-function executeIdentifyTask(evt) {
-    identifyParams.geometry = evt.mapPoint;
-    identifyParams.mapExtent = map.extent;
-
-    var deferred = identifyTask.execute(identifyParams);
-
-    deferred.addCallback(function (response) {
-        // response is an array of identify result objects    
-        // Let's return an array of features.
-        return dojo.map(response, function (result) {
-            var feature = result.feature;
-            for (var i = 0; i < idents.length; i++) {
-                var object = idents[i];
-                if (result.layerName === object.layerName) {
-                    var template = new esri.InfoTemplate("", object.layerContent);
-                    feature.setInfoTemplate(template);
-                }
-            }
-            return feature;
-        });
-    });
-
-    // InfoWindow expects an array of features from each deferred
-    // object that you pass. If the response from the task execution 
-    // above is not an array of features, then you need to add a callback
-    // like the one above to post-process the response and return an
-    // array of features.
-    map.infoWindow.setFeatures([deferred]);
-    map.infoWindow.show(evt.mapPoint);
 }
