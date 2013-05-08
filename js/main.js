@@ -17,7 +17,9 @@ dojo.require("dojo.fx")
 dojo.require("agsjs.dijit.TOC");
 
 var map;
-var identifyTask, identifyParams;
+var identifyTask;
+var identifyParams;
+var layerInfo = [];
 
 function init() {
     //setup the popup window 
@@ -32,18 +34,19 @@ function init() {
         infoWindow: popup
     });
 
-    dojo.connect(map, "onLoad", mapReady);
-
-    var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
-
     dojo.connect(map, 'onLayerAdd', function (results) {
-        var layerInfo = [{ layer: landBaseLayer, title: ""}];
         var toc = new agsjs.dijit.TOC({
             map: map,
             layerInfos: layerInfo
         }, 'tocDiv');
         toc.startup();
     });
+
+    dojo.connect(map, "onLoad", mapReady);
+
+    var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
+    layerInfo.push({ layer: landBaseLayer, title: ""});
+
 
     map.addLayer(landBaseLayer);
 
