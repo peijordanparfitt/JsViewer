@@ -44,12 +44,6 @@ function init() {
 
     dojo.connect(map, "onLoad", mapReady);
 
-    var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
-    layerInfo.push({ layer: landBaseLayer, title: ""});
-
-
-    map.addLayer(landBaseLayer);
-
     addMapParts();
 
 }
@@ -90,6 +84,12 @@ function addMapParts() {
 
 
 function mapReady(map) {
+
+
+    var landBaseLayer = new esri.layers.ArcGISDynamicMapServiceLayer(baseURL, { opacity: 1 });
+    layerInfo.push({ layer: landBaseLayer, title: "" });
+    map.addLayer(landBaseLayer);
+
     dojo.connect(map, "onClick", executeIdentifyTask);
     //create identify tasks and setup parameters 
     identifyTask = new esri.tasks.IdentifyTask(baseURL);
