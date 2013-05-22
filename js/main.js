@@ -14,12 +14,15 @@ dojo.require("esri.dijit.Legend");
 dojo.require("esri.dijit.Popup");
 dojo.require("esri.dijit.Scalebar");
 dojo.require("dojo.fx")
+dojo.require("dojo.request")
 dojo.require("agsjs.dijit.TOC");
 
 var map;
 var layerInfo = [];
+var closestFacilityTask;
 
 function init() {
+    closestFacilityTask = new esri.tasks.ClosestFacilityTask("http://route.arcgis.com/arcgis/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World");
     //setup the popup window 
     var popup = new esri.dijit.Popup({
         fillSymbol: new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 2), new dojo.Color([255, 255, 0, 0.25]))
@@ -42,6 +45,8 @@ function init() {
 
 
     dojo.connect(map, "onLoad", mapReady);
+    dojo.connect(map, "onClick", mapClickHandler);
+      
 
     addMapParts();
 
