@@ -46,7 +46,7 @@ var idents = [
             "Distance to Fiber Customer: ${DistToFiberCustomer} <br>" +
             "Street Num: ${STREETNUMB} <br>" +
             "Street Name: ${STREETNAME} <br>" +
-            "Last Name: ${LOCATIONCI} <br>"
+            "Location: ${LOCATIONCI} <br>"
         },
         {
             layerName: "Commercial Prospects (Green)",
@@ -62,7 +62,7 @@ var idents = [
             "Distance to Fiber Customer: ${DistToFiberCustomer} <br>" +
             "Street Num: ${STREETNUMB} <br>" +
             "Street Name: ${STREETNAME} <br>" +
-            "Last Name: ${LOCATIONCI} <br>"
+            "Location: ${LOCATIONCI} <br>"
         },
         {        
             layerName: "Commercial Prospects (Yellow)",
@@ -78,7 +78,7 @@ var idents = [
             "Distance to Fiber Customer: ${DistToFiberCustomer} <br>" +
             "Street Num: ${STREETNUMB} <br>" +
             "Street Name: ${STREETNAME} <br>" +
-            "Last Name: ${LOCATIONCI} <br>"
+            "Location: ${LOCATIONCI} <br>"
 
         }
     ];

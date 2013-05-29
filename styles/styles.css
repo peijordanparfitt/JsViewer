@@ -1,8 +1,15 @@
-html, body, #map {
+html, body {
     height:100%;
     width:100%;
     margin:0;
     padding:0;
+}
+
+#map {
+    height:100%;
+    width:100%;
+    margin:0; 
+    margin-bottom: 225px;
 }
 
 #searchDiv {
@@ -23,18 +30,12 @@ html, body, #map {
     padding: 5px 5px 5px 5px;
 }
 
-#controls {
-    position: absolute;
+#controls 
+{
+    margin-top: -225px;
     height: 210px;
-    bottom: 10px;
-    margin: 5px;
-    padding: 5px;
     z-index: 40;
     background: #fff;
     color: #444;
-    width: 90%;
-    left: 10px;
-    -moz-box-shadow: 0 0 5px #888;
-    -webkit-box-shadow: 0 0 5px #888;
-    box-shadow: 0 0 5px #888;
+    width: 100%;
 }

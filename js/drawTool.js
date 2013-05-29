@@ -18,7 +18,6 @@ function createToolbar(themap) {
     // listeners for buttons to activate drawing tools
     toolbar = new esri.toolbars.Draw(map);
     dojo.connect(toolbar, "onDrawEnd", addToMap);
-    dojo.connect(controls, "onClose", hideControls);
     
 }
 
@@ -59,7 +58,6 @@ function executeQuery() {
 
 function gridResults(results) {
     toolbarActive = true;
-    document.getElementById('controls').style.display = 'block';
     var table = document.getElementById('tableGrid');
 
     var rowCount = table.rows.length;
@@ -121,7 +119,4 @@ function zoomToFeature(feature) {
     } else {
         alert("No results matched your search.");
     }
-}
-function hideControls() {
-    document.getElementById('controls').style.display = 'none';
 }
