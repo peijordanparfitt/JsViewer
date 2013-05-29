@@ -1,5 +1,5 @@
 ﻿var mapConfig = {
-    initialCenter: [-81.3794, 28.5381],
+    initialCenter: [-80.3258, 27.4464],
     intialZoom: 10,
     showScalebar: true,
     showBasemapGallery: true,
@@ -11,53 +11,37 @@
     doIdentify: true
 };
 
-var initialCenter = [-81.3794, 28.5381];
-var intialZoom = 10;
 
 var mapLayers = [
         {
             name: "Map Layers",
-            url: "http://192.168.7.114/arcgis/rest/services/FiberNet/Base/MapServer",
-            opacity: 1,
+            url: "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/AppService_Cust_Sales/MapServer",
+            opacity: 1
         }
     ];
 
 var idents = [
-        {   
-            layerName: "OrlandoSplicesPt",
-            layerContent:"NAME: ${ORL-EN-00096} <br>" + 
-            "EA2: ${FLORIDA} <br>" + 
-            "NAME_1: ${Seminole} <br>" + 
-            "COUNTY_KEY: ${COUNTY_KEY} <br>"
-        },
+
         {
-            layerName: "OrlandoSlacksPt",
-            layerContent: "NAME: ${NAME} <br>" + 
-            "EA2: ${EA2} <br>" + 
-            "LOCATEID: ${LOCATEID} <br>" + 
-            "OWNER: ${OWNER} <br>" + 
-            "MEDIUM: ${MEDIUM} <br>" + 
-            "MANUFACTUR: ${MANUFACTUR} <br>"
-        },
-        {
-            layerName: "OrlandoAPPt",
-            layerContent: "NAME: ${NAME} <br>" + 
-            "ADDRESSNOT: ${ADDRESSNOT} <br>" +
-            "PLACEMENT: ${PLACEMENT} <br>" + 
-            "OWNER: ${OWNER} <br>" + 
-            "EA2: ${EA2} <br>" + 
-            "NAME_1: ${NAME_1} <br>"
-        },
-        {
-            layerName: "OrlandoMetro",
-            layerContent: "NAME: ${NAME} <br>" +
-            "PLACEMENT: ${PLACEMENT} <br>" +
-            "EA2: ${EA2} <br>" +
-            "OWNER: ${OWNER} <br>" +
-            "MEDIUM: ${MEDIUM} <br>" +
-            "MANUFACTUR: ${MANUFACTUR} <br>"
+            layerName: "Customers",
+            layerContent: "Last Name: ${CUO1LASTNA} <br>" +
+            "First Name: ${CUO1FIRSTN} <br>"
         }
     ];
 
 
 
+    var gridAttributes = {
+    "headers": [
+        {
+            "label": "Last Name",
+            "value": "CUO1LASTNA",
+            "isLink": false
+        },
+        {
+            "label": "First Name",
+            "value": "CUO1FIRSTN",
+            "isLink": false
+        }
+    ]
+    };
