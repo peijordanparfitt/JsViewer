@@ -71,10 +71,12 @@ function mapReady(map) {
                     identifyParams.geometry = evt.mapPoint;
                     identifyParams.mapExtent = map.extent;
 
-                    for (var y = 0; y < mapLayers.length; y++) {
-                        var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
+                    //for (var y = 0; y < mapLayers.length; y++) {
+                //    var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
+                    var identifyTask = new esri.tasks.IdentifyTask("http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_CustomersDisplay/MapServer");
+                    
                         var deferred = identifyTask.execute(identifyParams);
-                    }
+                    //}
 
                     deferred.addCallback(function (response) {
                         return dojo.map(response, function (result) {
@@ -84,14 +86,13 @@ function mapReady(map) {
                                 if (result.layerName === object.layerName) {
                                     var template = new esri.InfoTemplate("", object.layerContent);
                                     feature.setInfoTemplate(template);
+                                    map.infoWindow.setFeatures([deferred]);
+                                    map.infoWindow.show(evt.mapPoint);
                                 }
                             }
                             return feature;
                         });
                     });
-
-                    map.infoWindow.setFeatures([deferred]);
-                    map.infoWindow.show(evt.mapPoint);
                 }
             });
         }
