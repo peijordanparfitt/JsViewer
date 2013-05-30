@@ -16,16 +16,15 @@ dojo.require("esri.dijit.Scalebar");
 dojo.require("dojo.fx")
 dojo.require("dojo.request")
 dojo.require("agsjs.dijit.TOC");
-
-
-
+dojo.require("dijit.layout.ContentPane");
+dojo.require("dijit.layout.BorderContainer");
+dojo.require("dojox.layout.ExpandoPane");
 
 var map;
 var layerInfo = [];
 var closestFacilityTask;
 
 function init() {
-    closestFacilityTask = new esri.tasks.ClosestFacilityTask("http://route.arcgis.com/arcgis/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World");
     //setup the popup window 
     var popup = new esri.dijit.Popup({
         fillSymbol: new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 2), new dojo.Color([255, 255, 0, 0.25]))
@@ -46,59 +45,77 @@ function init() {
         toc.startup();
     });
 
-
     dojo.connect(map, "onLoad", mapReady);
 
     addMapParts();
-
 }
 
 function mapReady(map) {
-    //add layers and set identify
-    for (var i = 0; i < mapLayers.length; i++) {
-        var newLayer = new esri.layers.ArcGISDynamicMapServiceLayer(mapLayers[i].url, { opacity: mapLayers[i].opacity });
-        layerInfo.push({ layer: newLayer, title: mapLayers[i].name });
-        map.addLayer(newLayer);
-        if (mapConfig.doIdentify) {
-            dojo.connect(map, "onClick", function (evt) {
-                if (!toolbarActive) {
-                    var identifyParams = new esri.tasks.IdentifyParameters();
-                    identifyParams.tolerance = 3;
-                    identifyParams.returnGeometry = true;
-                    identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-                    identifyParams.width = map.width;
-                    identifyParams.height = map.height;
-                    identifyParams.geometry = evt.mapPoint;
-                    identifyParams.mapExtent = map.extent;
-
-                    //for (var y = 0; y < mapLayers.length; y++) {
-                //    var identifyTask = new esri.tasks.IdentifyTask(mapLayers[y].url);
-                    var identifyTask = new esri.tasks.IdentifyTask("http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_CustomersDisplay/MapServer");
-                    
-                        var deferred = identifyTask.execute(identifyParams);
-                    //}
-
-                    deferred.addCallback(function (response) {
-                        return dojo.map(response, function (result) {
-                            var feature = result.feature;
-                            for (var i = 0; i < idents.length; i++) {
-                                var object = idents[i];
-                                if (result.layerName === object.layerName) {
-                                    var template = new esri.InfoTemplate("", object.layerContent);
-                                    feature.setInfoTemplate(template);
-                                    map.infoWindow.setFeatures([deferred]);
-                                    map.infoWindow.show(evt.mapPoint);
-                                }
-                            }
-                            return feature;
-                        });
-                    });
-                }
-            });
-        }
-    }
+    addServices();
+    enableIdentify();
     createToolbar();
 }
+
+function enableIdentify() {
+    if (mapConfig.doIdentify) {
+        dojo.connect(map, "onClick", function (evt) {
+            if (!toolbarActive) {
+                for (i = 0; i < map.layerIds.length; i++) {
+                    if (map.getLayer(map.layerIds[i]).visible) {
+                        var identifyParams = new esri.tasks.IdentifyParameters();
+                        identifyParams.tolerance = 15;
+                        identifyParams.returnGeometry = true;
+                        identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+                        identifyParams.width = map.width;
+                        identifyParams.height = map.height;
+                        identifyParams.geometry = evt.mapPoint;
+                        identifyParams.mapExtent = map.extent;
+                        var identifyTask = new esri.tasks.IdentifyTask(map.getLayer(map.layerIds[i]).url);
+
+                        var deferred = identifyTask.execute(identifyParams);
+
+                        deferred.addCallback(function (response) {
+                            return dojo.map(response, function (result) {
+                                var feature = result.feature;
+                                for (var i = 0; i < idents.length; i++) {
+                                    var object = idents[i];
+                                    if (result.layerName === object.layerName) {
+                                        var template = new esri.InfoTemplate("", object.layerContent);
+                                        feature.setInfoTemplate(template);
+                                        map.infoWindow.setFeatures([deferred]);
+                                        map.infoWindow.show(evt.mapPoint);
+                                    }
+                                }
+                                return feature;
+                            });
+                        });
+                    }
+                }
+            }
+        });
+    }
+}
+
+
+function addServices() {
+    for (i = 0; i < mapServiceList.service.length; i++) {
+        var newLayer = addMapService(mapServiceList.service[i]);
+        layerInfo.push({ layer: newLayer, title: mapServiceList.service[i].ServiceName });
+        map.addLayer(newLayer);
+    }
+}
+
+function addMapService(service) {
+    var thisServiceName = service.ServiceId + 'Service';
+    var serviceText = "var " + thisServiceName + " = new esri.layers." + service.ServiceType + "(\"" + service.ServiceUrl + "\", {id: \'" + service.ServiceId + "\'";
+    if (service.ServiceOptions.length > 0) {
+        serviceText += ", " + service.ServiceOptions;
+    }
+    serviceText += "});";
+    eval(serviceText);
+    return (eval(thisServiceName));
+}
+
 
 
 
@@ -133,7 +150,7 @@ function addMapParts() {
         geocoder.startup();
 
         dojo.connect(geocoder, "onFindResults", function (results) {
-            afterGeocodeInit(results);
+            map.setExtent(results.results[0].extent);
         });
     }
 

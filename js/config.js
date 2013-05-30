@@ -11,24 +11,39 @@
     doIdentify: true
 };
 
-
-var mapLayers = [
-        {
-            name: "Customers",
-            url: "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_CustomersDisplay/MapServer",
-            opacity: 1
-        },
-        {
-            name: "Base",
-            url: "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_Base/MapServer",
-            opacity: 1
-        },
-        {
-            name: "Plant Infrastructur",
-            url: "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_PlantInfrastructure/MapServer",
-            opacity: 1
-        }
-    ];
+var mapServiceList = {
+    "service":
+						[
+							{
+							    "ServiceName": "Household",
+                                "ServiceId": "Household",
+							    "ServiceUrl": "http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Average_Household_Size/MapServer",
+							    "ServiceType": "ArcGISDynamicMapServiceLayer",
+							    "ServiceOptions": ""
+							},
+                            {
+                                "ServiceName": "Plant Infrastructure",
+                                "ServiceId": "PlantInfrastructure",
+                                "ServiceUrl": "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_PlantInfrastructure/MapServer",
+                                "ServiceType": "ArcGISDynamicMapServiceLayer",
+                                "ServiceOptions": ""
+                            },
+							{
+							    "ServiceName": "Customers",
+                                "ServiceId": "Customers",
+							    "ServiceUrl": "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_CustomersDisplay/MapServer",
+							    "ServiceType": "ArcGISDynamicMapServiceLayer",
+							    "ServiceOptions": ""
+                            },
+                            {
+                                "ServiceName": "Base",
+                                "ServiceId": "Base",
+							    "ServiceUrl": "http://gisdev2.patrickco.com/arcgis/rest/services/Telug/MapService_Base/MapServer",
+							    "ServiceType": "ArcGISDynamicMapServiceLayer",
+							    "ServiceOptions": ""
+                            }
+						]
+};
 
 var idents = [
 
@@ -83,8 +98,6 @@ var idents = [
         }
     ];
     
-
-
     var gridAttributes = {
     "headers": [
         {

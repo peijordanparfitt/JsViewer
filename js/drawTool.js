@@ -7,6 +7,7 @@ dojo.require("dojox.grid.DataGrid");
 
 var map, toolbar, symbol, geomTask;
 var toolbarActive = false;
+var csvData;
 
 function activateTool(type) {
     toolbarActive = true;
@@ -72,6 +73,15 @@ function gridResults(results) {
     for (var i = 0, il = results.features.length; i < il; i++) {
         addRow('tableGrid', results.features[i]);
     }
+
+    csvData = [];
+    for (var i = 0, il = results.features.length; i < il; i++) {
+        var tempArray = [];
+        for (var index in results.features[i].attributes) {
+            tempArray.push(results.features[i].attributes[index]);
+        }
+        csvData.push(tempArray);
+    }
 }
 
 function addRow(tableID, result) {
@@ -118,5 +128,30 @@ function zoomToFeature(feature) {
         });
     } else {
         alert("No results matched your search.");
+    }
+}
+
+function downloadCSV() {
+    if (csvData.length == 0) {
+        alert("Please do a query first.");
+    }
+    else {
+        var csvContent = "data:text/csv;charset=utf-8,";
+        csvData.forEach(function (infoArray, index) {
+
+           dataString = infoArray.join(",");
+           csvContent += index < infoArray.length ? dataString+ "\n" : dataString;
+
+        });
+
+       var encodedUri = encodeURI(csvContent);
+
+
+       var encodedUri = encodeURI(csvContent);
+       var link = document.createElement("a");
+       link.setAttribute("href", encodedUri);
+       link.setAttribute("download", "my_data.csv");
+
+       link.click(); // This will download the data file named "my_data.csv".
     }
 }

@@ -6,9 +6,10 @@
         <!--The viewport meta tag is used to improve the presentation and behavior of the samples 
           on iOS devices-->
         <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-        <title>Identify with Popup</title>
+        <title>Fiber Marketing Tool</title>
     
-
+    
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojox/layout/resources/ExpandoPane.css"/>
         <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/claro.css">    
         <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/esri/css/esri.css">
         <link href="styles/styles.css" rel="stylesheet" type="text/css" />
@@ -23,64 +24,78 @@
             };
         </script>
         <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"></script>
         <script src="js/config.js" type="text/javascript"></script>
         <script src="js/drawTool.js" type="text/javascript"></script>
         <script src="js/main.js" type="text/javascript"></script>
-        <script src="js/afterGeocode.js" type="text/javascript"></script>
         <script>
             dojo.addOnLoad(init);
         </script>
     </head>
   
     <body class="claro"> 
-        <div data-dojo-type="dijit.layout.BorderContainer" 
-             data-dojo-props="design:'headline', gutters:false" 
-             style="width:100%;height:100%;margin:0;">
 
-            <div id="map" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'" style="padding:0;">
+        
+    <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design:'sidebar', gutters:true, liveSplitters:true" id="borderContainer" style="width:100%;height:100%;margin:0;padding:0;">
+              <div data-dojo-type="dojox.layout.ExpandoPane" title="Customer Results" data-dojo-props="title: 'Customer Results', splitter:true, region:'bottom'" style="height: 225px;">
+                    <div style="padding: 2px; overflow-y: scroll; height: 100%;" class="tableContainer">
+                        <a href="#" onclick="downloadCSV()" style="float: right;">Export</a>
+                        <table id="tableGrid" cellspacing="0" cellpadding="5" border="1" width="100%"  style="height: 85%;">
+                        </table>
+                    </div>
+              </div>
+  
+
+
+                        <div id="map" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'" style="padding:0;">
             
-                <div style="position:absolute; right: 20px; top: 95px; z-Index: 999; min-width: 200px;">
-                    <div id="queryPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Query Customers', closable:false, open:false">
-                            <div id="queryDiv">
-                                <!--  <button data-dojo-type="dijit.form.Button" onclick="activateTool('POINT')">Point</button>
-                                  <button data-dojo-type="dijit.form.Button" onclick="activateTool('MULTI_POINT')">Multi Point</button>
-                                  <button data-dojo-type="dijit.form.Button" onclick="activateTool('LINE')">Line</button>
-                                  <button data-dojo-type="dijit.form.Button" onclick="activateTool('POLYLINE')">Polyline</button>-->
-                                  <img src="images/i_draw_poly.png" onclick="activateTool('POLYGON')" /> <br />
-                                <!--  <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYLINE')">Freehand Polyline</button>
-                                  <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYGON')">Freehand Polygon</button>-->
-                                  <button data-dojo-type="dijit.form.Button" onclick="executeQuery()">Do Query</button><br />
+                            <div style="position:absolute; right: 20px; top: 130px; z-Index: 999; min-width: 200px;">
+                                <div id="Div1" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Automated Routing', closable:false, open:false">
+                                </div>
                             </div>
-                    </div>
-                </div>
 
-                <div style="position:absolute; right: 20px; top: 60px; z-Index: 999; min-width: 200px;">
-                    <div id="tocPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Toggle Services', closable:false, open:false">
-                      
-                            <div id="tocDiv"></div>
-                  
-                    </div>
-                </div>
-                <div style="position:absolute; right: 20px; top: 25px; z-Index: 999; min-width: 200px;">
-                    <div data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Switch Basemap', closable:false,  open:false">
-                        <div data-dojo-type="dijit.layout.ContentPane" style="width:380px; height:280px; overflow:auto;">
-                            <div id="basemapGallery"></div>
+                            <div style="position:absolute; right: 20px; top: 95px; z-Index: 999; min-width: 200px;">
+                                <div id="queryPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Query Customers', closable:false, open:false">
+                                        <div id="queryDiv"  data-dojo-type="dijit.layout.ContentPane" style="max-width:380px; max-height:400px; overflow-y: scroll; text-align: center;">
+                                            <!--  <button data-dojo-type="dijit.form.Button" onclick="activateTool('POINT')">Point</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="activateTool('MULTI_POINT')">Multi Point</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="activateTool('LINE')">Line</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="activateTool('POLYLINE')">Polyline</button>-->
+                                              <img src="images/i_draw_poly.png" onclick="activateTool('POLYGON')" /> <br />
+                                            <!--  <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYLINE')">Freehand Polyline</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYGON')">Freehand Polygon</button>-->
+                                              <button data-dojo-type="dijit.form.Button" onclick="executeQuery()">Do Query</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="map.graphics.clear()">Clear</button>
+                                        </div>
+                                </div>
+                            </div>
+
+                            <div style="position:absolute; right: 20px; top: 60px; z-Index: 999; min-width: 200px;">
+                                <div id="tocPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Toggle Services', closable:false, open:false">
+                                    <div data-dojo-type="dijit.layout.ContentPane" style="max-height: 400px; overflow-y: scroll;">
+                                        <div id="tocDiv"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position:absolute; right: 20px; top: 25px; z-Index: 999; min-width: 200px;">
+                                <div data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Switch Basemap', closable:false,  open:false">
+                                    <div data-dojo-type="dijit.layout.ContentPane" style="max-width:380px; max-height: 400px; overflow-y: scroll;">
+                                        <div id="basemapGallery"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="position:absolute; left: 75px; top: 25px; z-Index: 999; min-width: 200px;">
+                                    <div data-dojo-type="dijit.layout.ContentPane" >
+                                        <div id="searchDiv"></div>
+                                    </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="searchDiv"></div>
+  
+  
+    </div>
            
-        <div id="controls">
-            <div>
-                <b style="padding-left: 5px;">Results</b>
-                <br />
-                <div style="height: 200px; overflow:auto; padding: 2px;" class="tableContainer">
-                    <table id="tableGrid" cellspacing="0" cellpadding="5" border="1" width="100%" class="scrollTable">
-                    </table>
-                </div>
-        </div>
+
 
     </body>
 </html>
