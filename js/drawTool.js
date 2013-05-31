@@ -4,10 +4,12 @@ dojo.require("esri.toolbars.draw");
 dojo.require("dijit.layout.BorderContainer");
 dojo.require("dijit.layout.ContentPane");
 dojo.require("dojox.grid.DataGrid");
+dojo.require("dojo._base.lang");
 
 var map, toolbar, symbol, geomTask;
 var toolbarActive = false;
 var csvData;
+var grid;
 
 function activateTool(type) {
     toolbarActive = true;
@@ -57,22 +59,32 @@ function executeQuery() {
     queryTask.execute(query, gridResults);
 }
 
+require(['dojo/_base/lang', 'dojox/grid/DataGrid', 'dojo/data/ItemFileWriteStore', 'dojo/dom', 'dojo/domReady!'],
+function gridSetup() {
+
+    /*set up layout*/
+
+    /*create a new grid*/
+    grid = new dojox.grid.DataGrid({
+        id: 'grid',
+        structure: gridLayout,
+        height: '85%'
+    });
+
+    /*append the new grid to the div*/
+    grid.placeAt("tableDiv");
+
+    /*Call startup() to render the grid*/
+    grid.startup();
+
+});
+
 function gridResults(results) {
-    toolbarActive = true;
-    var table = document.getElementById('tableGrid');
-
-    var rowCount = table.rows.length;
-    var row = table.insertRow(rowCount);
-    for (var i = 0, il = gridAttributes.headers.length; i < il; i++) {
-        row.insertCell(i).innerHTML = "<b>" + gridAttributes.headers[i].label + "</b>";
-    }
-
-    row.insertCell(gridAttributes.headers.length).innerHTML = "";
-
-
-    for (var i = 0, il = results.features.length; i < il; i++) {
-        addRow('tableGrid', results.features[i]);
-    }
+    /*set up data store*/
+    var data = {
+        identifier: "id",
+        items: []
+    };
 
     csvData = [];
     for (var i = 0, il = results.features.length; i < il; i++) {
@@ -82,41 +94,30 @@ function gridResults(results) {
         }
         csvData.push(tempArray);
     }
-}
 
-function addRow(tableID, result) {
-
-    var featureAttributes = result.attributes;
-    var table = document.getElementById(tableID);
-
-    var rowCount = table.rows.length;
-    var row = table.insertRow(rowCount);
-
-    for (var i = 0, il = gridAttributes.headers.length; i < il; i++) {
-        if (featureAttributes[gridAttributes.headers[i].value] != null) {
-            if (gridAttributes.headers[i].isLink) {
-                var preLink = gridAttributes.headers[i].preLink.toString();
-                var midLink = featureAttributes[gridAttributes.headers[i].value];
-                var postLink = gridAttributes.headers[i].postLink.toString();
-                row.insertCell(i).innerHTML = preLink + midLink + postLink;
-            } else {
-                row.insertCell(i).innerHTML = featureAttributes[gridAttributes.headers[i].value];
-            }
-        } else {
-            row.insertCell(i).innerHTML = "";
+    var gridData = [];
+    for (var i = 0, il = results.features.length; i < il; i++) {
+        var tempArray = [];
+        var obj = '{"';
+        for (var value in gridLayout[0]) {
+            obj += gridLayout[0][value].field.toString();
+            obj += '":"';
+            obj += results.features[i].attributes[gridLayout[0][value].field];
+            obj += '","';
         }
+        var lastIndex = obj.lastIndexOf(',"')
+        obj = obj.substring(0, lastIndex);
+        obj += "}";
+        gridData.push(JSON.parse(obj));
     }
 
-    var cell = row.insertCell(gridAttributes.headers.length);
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "Zoom to";
-    cell.appendChild(button);
-    button.onclick = function () {
-        zoomToFeature(result);
-    };
-}
+    for (var i = 0, l = gridData.length; i < gridData.length; i++) {
+        data.items.push(dojo._base.lang.mixin({ id: i + 1 }, gridData[i % l]));
+    }
 
+    var store = new dojo.data.ItemFileWriteStore({ data: data });
+    grid.setStore(store);
+}
 
 function zoomToFeature(feature) {
     if (feature) {

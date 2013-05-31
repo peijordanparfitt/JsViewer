@@ -14,13 +14,6 @@
 var mapServiceList = {
     "service":
 						[
-							{
-							    "ServiceName": "Household",
-                                "ServiceId": "Household",
-							    "ServiceUrl": "http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Average_Household_Size/MapServer",
-							    "ServiceType": "ArcGISDynamicMapServiceLayer",
-							    "ServiceOptions": ""
-							},
                             {
                                 "ServiceName": "Plant Infrastructure",
                                 "ServiceId": "PlantInfrastructure",
@@ -97,34 +90,13 @@ var idents = [
 
         }
     ];
-    
-    var gridAttributes = {
-    "headers": [
-        {
-        	"label": "Business Name",
-            "value" : "CUO1LASTNA",
-            "isLink": false
-        },
-        {
-        	"label": "Customer Status",
-            "value": "CustomerStatus",
-            "isLink": false
-        },
-        {
-            "label": "Has Phone",
-            "value": "HasPhone",
-            "isLink": false
-        },
-        {
-            "label": "Has Video",
-            "value": "HasVideo",
-            "isLink": false
-        },
-        {
-        	"label": "Has Data",
-            "value": "HasData",
-            "isLink": false
-        }
 
-    ]
-    };
+
+
+var gridLayout = [[
+		{ 'name': 'Business Name', 'field': 'CUO1LASTNA' , 'width': '25%' },
+		{ 'name': 'Customer Status', 'field': 'CustomerStatus', 'width': '25%' },
+		{ 'name': 'Has Phone', 'field': 'HasPhone', 'width': '25%' },
+		{ 'name': 'Has Video', 'field': 'HasVideo', 'width': '25%' }
+	]];
+    

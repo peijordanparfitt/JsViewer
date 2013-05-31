@@ -24,6 +24,7 @@ var map;
 var layerInfo = [];
 var closestFacilityTask;
 
+
 function init() {
     //setup the popup window 
     var popup = new esri.dijit.Popup({
