@@ -37,3 +37,8 @@ html, body {
     color: #444;
     width: 100%;
 }
+
+.dojoxGridCell_dojoxGridCellFocus
+{
+    border: none;
+}

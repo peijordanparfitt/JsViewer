@@ -93,8 +93,9 @@ var idents = [
 
 
 
-var gridLayout = [[
-		{ 'name': 'Business Name', 'field': 'CUO1LASTNA' , 'width': '25%' },
+        var gridLayout = [[
+		{ 'field': 'OBJECTID', 'width': '5%' },
+		{ 'name': 'Business Name', 'field': 'CUO1LASTNA' , 'width': '20%' },
 		{ 'name': 'Customer Status', 'field': 'CustomerStatus', 'width': '25%' },
 		{ 'name': 'Has Phone', 'field': 'HasPhone', 'width': '25%' },
 		{ 'name': 'Has Video', 'field': 'HasVideo', 'width': '25%' }

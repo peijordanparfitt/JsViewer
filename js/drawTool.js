@@ -68,15 +68,31 @@ function gridSetup() {
     grid = new dojox.grid.DataGrid({
         id: 'grid',
         structure: gridLayout,
-        height: '85%'
+        height: '85%',
+        selectionMode: 'none'
     });
 
     /*append the new grid to the div*/
     grid.placeAt("tableDiv");
 
     /*Call startup() to render the grid*/
-    grid.startup();
+    grid.startup(); 
 
+    grid.on("RowClick", function (evt) {
+        var idx = evt.rowIndex;
+        var rowData = grid.getItem(idx);
+
+        var queryTask = new esri.tasks.QueryTask("http://gisdev2.patrickco.com/arcgis/rest/services/Telug/AppService_Cust_Sales/MapServer/1");
+
+
+        //build query filter
+        var query = new esri.tasks.Query();
+        query.where = "OBJECTID = " + rowData.OBJECTID;
+        query.returnGeometry = true;
+        query.outFields = ["*"];
+        //execute query
+        queryTask.execute(query, zoomToFeature);
+    }, true);
 });
 
 function gridResults(results) {
@@ -119,7 +135,8 @@ function gridResults(results) {
     grid.setStore(store);
 }
 
-function zoomToFeature(feature) {
+function zoomToFeature(results) {
+    var feature = results.features[0];
     if (feature) {
         var gsvc = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
         var outSR = new esri.SpatialReference({ wkid: 102113 });
