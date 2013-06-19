@@ -20,6 +20,7 @@ function createToolbar(themap) {
     // loop through all dijits, connect onClick event
     // listeners for buttons to activate drawing tools
     toolbar = new esri.toolbars.Draw(map);
+    toolbar.fillSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 5), new dojo.Color([255, 255, 0, 0.25]));
     dojo.connect(toolbar, "onDrawEnd", addToMap);
     
 }
@@ -34,10 +35,10 @@ function addToMap(geometry) {
         symbol = new esri.symbol.SimpleMarkerSymbol();
         break;
         case "polyline":
-        symbol = new esri.symbol.SimpleLineSymbol();
+            symbol = new esri.symbol.SimpleLineSymbol();
         break;
-        default:
-        symbol = new esri.symbol.SimpleFillSymbol();
+    default:
+        symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 5), new dojo.Color([255, 255, 0, 0.25]));
         break;
     }
     var graphic = new esri.Graphic(geometry, symbol);
@@ -68,9 +69,11 @@ function gridSetup() {
     grid = new dojox.grid.DataGrid({
         id: 'grid',
         structure: gridLayout,
-        height: '85%',
-        selectionMode: 'none'
+        height: '85%'
     });
+
+    //hide objectid
+    grid.layout.setColumnVisibility(0, false);
 
     /*append the new grid to the div*/
     grid.placeAt("tableDiv");

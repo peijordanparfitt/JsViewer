@@ -11,7 +11,7 @@
     
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojox/layout/resources/ExpandoPane.css"/>
         <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/dojo/dijit/themes/claro/claro.css">    
-	    <link rel="stylesheet" href="http://dojotoolkit.org/reference-guide/1.9/_static/js/dojox/grid/resources/claroGrid.css">    
+        <link href="styles/grid.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.4/js/esri/css/esri.css">
         <link href="styles/styles.css" rel="stylesheet" type="text/css" />
         
@@ -38,8 +38,8 @@
 
         
     <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design:'sidebar', gutters:true, liveSplitters:true" id="borderContainer" style="width:100%;height:100%;margin:0;padding:0;">
-              <div data-dojo-type="dojox.layout.ExpandoPane" title="Customer Results" data-dojo-props="title: 'Customer Results', splitter:true, region:'bottom'" style="height: 225px;"  id="tableDiv">
-              </div>
+                  <div data-dojo-type="dojox.layout.ExpandoPane" title="Customer List" data-dojo-props="title: 'Customer List', splitter:true, region:'bottom'" style="height: 225px;"  id="tableDiv">
+                  </div>
   
 
 
@@ -60,7 +60,7 @@
                                               <img src="images/i_draw_poly.png" onclick="activateTool('POLYGON')" /> <br />
                                             <!--  <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYLINE')">Freehand Polyline</button>
                                               <button data-dojo-type="dijit.form.Button" onclick="activateTool('FREEHAND_POLYGON')">Freehand Polygon</button>-->
-                                              <button data-dojo-type="dijit.form.Button" onclick="executeQuery()">Do Query</button>
+                                              <button data-dojo-type="dijit.form.Button" onclick="executeQuery()">Find Customers</button>
                                               <button data-dojo-type="dijit.form.Button" onclick="map.graphics.clear()">Clear</button>
                                         </div>
                                         <a style="padding: 20px" href="#" onclick="downloadCSV()">Export Results</a>
@@ -68,7 +68,7 @@
                             </div>
 
                             <div style="position:absolute; right: 20px; top: 60px; z-Index: 999; min-width: 200px;">
-                                <div id="tocPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Toggle Services', closable:false, open:false">
+                                <div id="tocPane" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'Map Layers', closable:false, open:false">
                                     <div data-dojo-type="dijit.layout.ContentPane" style="max-height: 400px; overflow-y: scroll;">
                                         <div id="tocDiv"></div>
                                     </div>

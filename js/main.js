@@ -81,7 +81,7 @@ function enableIdentify() {
                                 for (var i = 0; i < idents.length; i++) {
                                     var object = idents[i];
                                     if (result.layerName === object.layerName) {
-                                        var template = new esri.InfoTemplate("", object.layerContent);
+                                        var template = new esri.InfoTemplate(object.layerTitle, object.layerContent);
                                         feature.setInfoTemplate(template);
                                         map.infoWindow.setFeatures([deferred]);
                                         map.infoWindow.show(evt.mapPoint);

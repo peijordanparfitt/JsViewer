@@ -42,6 +42,7 @@ var idents = [
 
         {
             layerName: "Active Commercial Accounts",
+            layerTitle: "${CUO1LASTNA}",
             layerContent:
             "Business Name: ${CUO1LASTNA} <br>" +
             "Customer Status: ${CustomerStatus} <br>" +
@@ -58,6 +59,7 @@ var idents = [
         },
         {
             layerName: "Commercial Prospects (Green)",
+            layerTitle: "${CUO1LASTNA}",
             layerContent:
             "Business Name: ${CUO1LASTNA} <br>" +
             "Customer Status: ${CustomerStatus} <br>" +
@@ -74,6 +76,7 @@ var idents = [
         },
         {        
             layerName: "Commercial Prospects (Yellow)",
+            layerTitle: "${CUO1LASTNA}",
             layerContent:
             "Business Name: ${CUO1LASTNA} <br>" +
             "Customer Status: ${CustomerStatus} <br>" +
@@ -94,7 +97,7 @@ var idents = [
 
 
         var gridLayout = [[
-		{ 'field': 'OBJECTID', 'width': '5%' },
+		{ 'field': 'OBJECTID', 'show': 'false' },
 		{ 'name': 'Business Name', 'field': 'CUO1LASTNA' , 'width': '20%' },
 		{ 'name': 'Customer Status', 'field': 'CustomerStatus', 'width': '25%' },
 		{ 'name': 'Has Phone', 'field': 'HasPhone', 'width': '25%' },
